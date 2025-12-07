@@ -1,0 +1,112 @@
+# 手杖名称
+wand:
+  stone:
+    name: "&6石制建筑之杖"
+  iron:
+    name: "&6铁制建筑之杖"
+  diamond:
+    name: "&6钻石建筑之杖"
+  netherite:
+    name: "&6下界合金建筑之杖"
+  infinity:
+    name: "&6无限建筑之杖"
+  
+  # 物品描述
+  lore:
+    max-blocks: "&e最大放置: &f{0} 方块"
+    durability: "&e耐久度: &f{0}"
+    durability-infinite: "&e耐久度: &d无限"
+    usage-1: "&b右键点击方块表面延伸放置"
+
+# 消息
+message:
+  place-success: "&a成功放置了 {0} 个方块！"
+  no-place: "&e没有可以放置的位置，请确保你有足够的方块！"
+  no-permission: "&c你没有权限执行此操作！"
+  no-permission-wand-type: "&c你没有使用 {0} 的权限！"
+  wand-given: "&a已给予 {0} 一个 {1}"
+  wand-received: "&a你获得了一个 {0}"
+  config-reloaded: "&a配置已重新加载！"
+  player-not-found: "&c找不到玩家: {0}"
+  unknown-wand-type: "&c未知的手杖类型: {0}"
+  console-need-player: "&c控制台必须指定玩家！"
+  unknown-command: "&c未知的子命令: {0}"
+  available-types: "&e可用类型: stone, iron, diamond, netherite, infinity"
+  cannot-grindstone: "&c建筑之杖不能放入砂轮！"
+  not-holding-wand: "&c你手中没有拿着建筑之杖！"
+  unknown-enchant: "&c未知的附魔: {0}"
+  available-enchants: "&e可用附魔: building_extension"
+  invalid-level: "&c无效的等级: {0}"
+  enchant-added: "&a成功添加附魔 {0} {1}！"
+  enchant-removed: "&a成功移除附魔 {0}！"
+  enchant-not-found: "&e该手杖没有此附魔！"
+  enchant-failed: "&c附魔失败！"
+  preview-mode-changed: "&a预览模式已切换为: {0}"
+  color-changed: "&a粒子颜色已切换为: {0}"
+  current-language: "&e当前语言: &f{0}"
+  available-languages: "&e可用语言: &f{0}"
+  unknown-language: "&c未知的语言: {0}"
+  language-changed: "&a语言已切换为: {0}"
+  wands-updated: "&7已更新 {0} 个手杖的显示"
+
+# 预览模式
+preview:
+  mode:
+    full: "&a完整轮廓"
+    corners: "&e角落标记"
+    outline: "&b外包框"
+
+# GUI
+gui:
+  wand:
+    title: "&6建筑之杖"
+  settings:
+    title: "&6建筑之杖设置"
+    mode:
+      full:
+        name: "&e完整轮廓"
+        desc: "&7每个方块显示完整的12条边"
+      corners:
+        name: "&e角落标记"
+        desc: "&7每个方块只显示8个角"
+      outline:
+        name: "&e外包框"
+        desc: "&7只显示选区的外边缘"
+    color:
+      name: "&e{0}"
+      desc: "&7点击选择此颜色"
+    current-selection: "&a✔ 当前选择"
+    click-to-select: "&7点击选择"
+
+# 附魔
+enchant:
+  building_extension:
+    name: "&d建筑扩展"
+    lore: "&7增加最大放置方块数 &a+{0}%"
+
+# 命令帮助
+command:
+  help:
+    title: "&6=== 建筑之杖帮助 ==="
+    give: "&e/cw give <类型> [玩家] &f- 给予建筑之杖"
+    itemgui: "&e/cw itemgui &f- 打开手杖GUI界面"
+    gui: "&e/cw gui &f- 打开设置GUI（预览模式/颜色）"
+    enchant: "&e/cw enchant <附魔名> <等级> &f- 给手中的手杖附魔"
+    nbtdebug: "&e/cw nbtdebug &f- 查看手中物品的NBT信息"
+    preview: "&e/cw preview &f- 切换预览模式（完整/角落/外包框）"
+    lang: "&e/cw lang <语言> &f- 切换语言（zh_CN/zh_TW/en_US/lzh）"
+    list: "&e/cw list &f- 列出所有手杖类型"
+    reload: "&e/cw reload &f- 重新加载配置"
+    help: "&e/cw help &f- 显示此帮助"
+    usage: "&7使用方法: 手持建筑之杖右键点击方块表面"
+    usage-detail: "&7会自动延伸放置相同的方块"
+  
+  list:
+    title: "&6=== 建筑之杖列表 ==="
+    max: "最大: {0}方块"
+    durability: "耐久: {0}"
+    infinite: "&d无限耐久"
+  
+  usage:
+    give: "&c用法: /cw give <类型> [玩家]"
+    enchant: "&c用法: /cw enchant <附魔名> <等级>"

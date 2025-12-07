@@ -1,0 +1,112 @@
+# Wand Names
+wand:
+  stone:
+    name: "&6Stone Construction Wand"
+  iron:
+    name: "&6Iron Construction Wand"
+  diamond:
+    name: "&6Diamond Construction Wand"
+  netherite:
+    name: "&6Netherite Construction Wand"
+  infinity:
+    name: "&6Infinity Construction Wand"
+  
+  # Item Lore
+  lore:
+    max-blocks: "&eMax Blocks: &f{0}"
+    durability: "&eDurability: &f{0}"
+    durability-infinite: "&eDurability: &dInfinite"
+    usage-1: "&bRight-click block surface to extend"
+
+# Messages
+message:
+  place-success: "&aSuccessfully placed {0} blocks!"
+  no-place: "&eNo placeable positions found. Make sure you have enough blocks!"
+  no-permission: "&cYou don't have permission to do this!"
+  no-permission-wand-type: "&cYou don't have permission to use {0}!"
+  wand-given: "&aGave {1} to {0}"
+  wand-received: "&aYou received a {0}"
+  config-reloaded: "&aConfiguration reloaded!"
+  player-not-found: "&cPlayer not found: {0}"
+  unknown-wand-type: "&cUnknown wand type: {0}"
+  console-need-player: "&cConsole must specify a player!"
+  unknown-command: "&cUnknown subcommand: {0}"
+  available-types: "&eAvailable types: stone, iron, diamond, netherite, infinity"
+  cannot-grindstone: "&cConstruction wands cannot be placed in grindstone!"
+  not-holding-wand: "&cYou are not holding a construction wand!"
+  unknown-enchant: "&cUnknown enchantment: {0}"
+  available-enchants: "&eAvailable enchantments: building_extension"
+  invalid-level: "&cInvalid level: {0}"
+  enchant-added: "&aSuccessfully added enchantment {0} {1}!"
+  enchant-removed: "&aSuccessfully removed enchantment {0}!"
+  enchant-not-found: "&eThis wand does not have this enchantment!"
+  enchant-failed: "&cEnchantment failed!"
+  preview-mode-changed: "&aPreview mode changed to: {0}"
+  color-changed: "&aParticle color changed to: {0}"
+  current-language: "&eCurrent language: &f{0}"
+  available-languages: "&eAvailable languages: &f{0}"
+  unknown-language: "&cUnknown language: {0}"
+  language-changed: "&aLanguage changed to: {0}"
+  wands-updated: "&7Updated display for {0} wand(s)"
+
+# Preview Modes
+preview:
+  mode:
+    full: "&aFull Outline"
+    corners: "&eCorners Only"
+    outline: "&bBounding Box"
+
+# GUI
+gui:
+  wand:
+    title: "&6Construction Wands"
+  settings:
+    title: "&6Wand Settings"
+    mode:
+      full:
+        name: "&eFull Outline"
+        desc: "&7Shows all 12 edges per block"
+      corners:
+        name: "&eCorners Only"
+        desc: "&7Shows only 8 corners per block"
+      outline:
+        name: "&eBounding Box"
+        desc: "&7Shows only the outer edges"
+    color:
+      name: "&e{0}"
+      desc: "&7Click to select this color"
+    current-selection: "&a✔ Currently selected"
+    click-to-select: "&7Click to select"
+
+# Enchantments
+enchant:
+  building_extension:
+    name: "&dBuilding Extension"
+    lore: "&7Increases max blocks by &a+{0}%"
+
+# Command Help
+command:
+  help:
+    title: "&6=== Construction Wand Help ==="
+    give: "&e/cw give <type> [player] &f- Give a construction wand"
+    itemgui: "&e/cw itemgui &f- Open wand GUI"
+    gui: "&e/cw gui &f- Open settings GUI (preview mode/color)"
+    enchant: "&e/cw enchant <name> <level> &f- Enchant the wand in hand"
+    nbtdebug: "&e/cw nbtdebug &f- View NBT info of item in hand"
+    preview: "&e/cw preview &f- Toggle preview mode (full/corners/outline)"
+    lang: "&e/cw lang <language> &f- Change language (zh_CN/zh_TW/en_US/lzh)"
+    list: "&e/cw list &f- List all wand types"
+    reload: "&e/cw reload &f- Reload configuration"
+    help: "&e/cw help &f- Show this help"
+    usage: "&7Usage: Hold a wand and right-click on a block surface"
+    usage-detail: "&7Blocks will be extended automatically"
+  
+  list:
+    title: "&6=== Construction Wand List ==="
+    max: "Max: {0} blocks"
+    durability: "Durability: {0}"
+    infinite: "&dInfinite durability"
+  
+  usage:
+    give: "&cUsage: /cw give <type> [player]"
+    enchant: "&cUsage: /cw enchant <name> <level>"

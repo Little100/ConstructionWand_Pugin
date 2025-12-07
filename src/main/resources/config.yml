@@ -1,0 +1,84 @@
+# 语言设置
+# Language Setting
+language: "zh_CN"
+
+# 预览设置
+# preview settings
+preview:
+  # 粒子颜色
+  # particle color
+  # 可用值: RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE, WHITE, AQUA, LIME
+  # 或者使用十六进制颜色，如: #FF0000
+  particle-color: "RED"
+  
+  # 预览模式
+  # full - 完整轮廓
+  # corners - 角落标记
+  # outline - 外包框
+  # 玩家可以使用 /cw preview 命令切换自己的预览模式
+  # Preview Mode
+  # full - Full Outline
+  # corners - Corners Marked
+  # outline - Outline Box
+  # Players can use /cw preview command to switch their own preview mode
+  mode: "full"
+
+# 保护/领地插件兼容设置
+# protection/land plugin compatibility settings
+protection:
+  # 是否使用事件检查
+  # 通过模拟 BlockPlaceEvent 来检查权限
+  # 这可以兼容大多数领地插件
+  # use event check?
+  # by simulating BlockPlaceEvent to check permissions
+  # this can be compatible with most land plugins
+  use-event-check: true
+  
+  # 是否使用WorldGuard原生 API
+  # 作为事件检查的补充
+  # use WorldGuard native API as an addition to event check?
+  use-worldguard: true
+
+# 手杖设置
+# wand settings
+wands:
+  # 石制建筑之杖
+  stone:
+    enabled: true
+    max-blocks: 9
+    durability: 131
+  
+  # 铁制建筑之杖
+  iron:
+    enabled: true
+    max-blocks: 27
+    durability: 250
+  
+  # 钻石建筑之杖
+  diamond:
+    enabled: true
+    max-blocks: 128
+    durability: 1561
+  
+  # 下界合金建筑之杖
+  netherite:
+    enabled: true
+    max-blocks: 256
+    durability: 2031
+  
+  # 无限建筑之杖
+  infinity:
+    enabled: true
+    max-blocks: 1024
+    # 无限手杖没有耐久度限制
+    # THe infinity wand has no durability limit(unbreakable)
+
+# 音效设置
+sounds:
+  # 放置方块音效
+  place: true
+  # 手杖损坏音效
+  break: true
+
+# 调试模式
+debug: false

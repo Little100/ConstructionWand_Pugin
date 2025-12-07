@@ -1,0 +1,32 @@
+# 是否启用此附魔
+# Enable this enchantment?
+enabled: true
+
+# 附魔台/铁砧可获得的最大等级
+# The maximum level that the anvil/furnace can give.
+max-level: 5
+
+# 各等级的加成百分比
+# every level's percentage increase
+# 等级1: 10% = 0.10
+# 等级2: 25% = 0.25
+# 等级3: 40% = 0.40
+# 可以添加更多等级
+# you can add more levels
+levels:
+  1: 0.10
+  2: 0.25
+  3: 0.40
+  4: 0.55
+  5: 0.70
+  6: 0.85
+  7: 1.00
+  8: 1.20
+  9: 1.40
+  10: 1.60
+
+# 超过配置等级时的默认增量
+# The increment when the level is higher than the configured level.
+# 例如：等级11 = 等级10的加成 + default-increment
+# example: level 11 = level 10's increase + default-increment
+default-increment: 0.20

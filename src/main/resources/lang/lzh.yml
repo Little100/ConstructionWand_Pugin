@@ -1,0 +1,112 @@
+# 杖名
+wand:
+  stone:
+    name: "&6石築杖"
+  iron:
+    name: "&6鐵築杖"
+  diamond:
+    name: "&6金剛石築杖"
+  netherite:
+    name: "&6下界玄鐵築杖"
+  infinity:
+    name: "&6無極築杖"
+  
+  # 器物述
+  lore:
+    max-blocks: "&e至多置: &f{0} 方"
+    durability: "&e耐久: &f{0}"
+    durability-infinite: "&e耐久: &d無窮"
+    usage-1: "&b右擊方表面以延築之"
+
+# 訊
+message:
+  place-success: "&a築 {0} 方，成矣！"
+  no-place: "&e無可築之位，請備足方！"
+  no-permission: "&c汝無權行此事！"
+  no-permission-wand-type: "&c汝無權執 {0}！"
+  wand-given: "&a已授 {0} 以 {1}"
+  wand-received: "&a汝獲 {0}"
+  config-reloaded: "&a配置已新載！"
+  player-not-found: "&c未見其人: {0}"
+  unknown-wand-type: "&c未識之杖: {0}"
+  console-need-player: "&c臺令須指其人！"
+  unknown-command: "&c未識之令: {0}"
+  available-types: "&e杖之有: 石, 鐵, 金剛石, 下界玄鐵, 無極"
+  cannot-grindstone: "&c築杖不可入砂輪！"
+  not-holding-wand: "&c汝未執築杖！"
+  unknown-enchant: "&c未識之附: {0}"
+  available-enchants: "&e附之有: building_extension"
+  invalid-level: "&c品階非善: {0}"
+  enchant-added: "&a附 {0} {1}，成矣！"
+  enchant-removed: "&a除附 {0}，成矣！"
+  enchant-not-found: "&e此杖無是附也"
+  enchant-failed: "&c附之敗矣！"
+  preview-mode-changed: "&a預觀之式易為: {0}"
+  color-changed: "&a微塵之色易為: {0}"
+  current-language: "&e今之言: &f{0}"
+  available-languages: "&e言之有: &f{0}"
+  unknown-language: "&c未識之言: {0}"
+  language-changed: "&a言易為: {0}"
+  wands-updated: "&7已更 {0} 柄杖之顯"
+
+# 預觀之式
+preview:
+  mode:
+    full: "&a全形"
+    corners: "&e隅標"
+    outline: "&b外廓"
+
+# 圖示之介
+gui:
+  wand:
+    title: "&6築杖"
+  settings:
+    title: "&6築杖之設"
+    mode:
+      full:
+        name: "&e全形"
+        desc: "&7每方顯十二棱"
+      corners:
+        name: "&e隅標"
+        desc: "&7每方顯八角"
+      outline:
+        name: "&e外廓"
+        desc: "&7唯顯外緣"
+    color:
+      name: "&e{0}"
+      desc: "&7擊此擇色"
+    current-selection: "&a✔ 今擇"
+    click-to-select: "&7擊之擇"
+
+# 附靈
+enchant:
+  building_extension:
+    name: "&d築延"
+    lore: "&7增築方之數 &a+{0}%"
+
+# 令助
+command:
+  help:
+    title: "&6=== 築杖之助 ==="
+    give: "&e/cw give <類> [人] &f- 授築杖"
+    itemgui: "&e/cw itemgui &f- 啟杖之介"
+    gui: "&e/cw gui &f- 啟設之介（預觀式/色）"
+    enchant: "&e/cw enchant <附名> <品階> &f- 附靈於杖"
+    nbtdebug: "&e/cw nbtdebug &f- 觀執物之幽文"
+    preview: "&e/cw preview &f- 易預觀之式（全/隅/廓）"
+    lang: "&e/cw lang <言> &f- 易言（文言/官話/英文/古漢文）"
+    list: "&e/cw list &f- 列諸杖"
+    reload: "&e/cw reload &f- 新載配置"
+    help: "&e/cw help &f- 示此助"
+    usage: "&7用之法: 執築杖右擊方之表"
+    usage-detail: "&7自延築同方"
+  
+  list:
+    title: "&6=== 築杖之列 ==="
+    max: "至多: {0}方"
+    durability: "耐久: {0}"
+    infinite: "&d無窮耐久"
+  
+  usage:
+    give: "&c用: /cw give <類> [人]"
+    enchant: "&c用: /cw enchant <附名> <品階>"

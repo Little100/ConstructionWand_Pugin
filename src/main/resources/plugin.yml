@@ -1,0 +1,99 @@
+name: ConstructionWand
+version: '${version}'
+main: org.little100.constructionWand.ConstructionWand
+api-version: '1.16'
+folia-supported: true
+authors: [ Little_100 ]
+description: 建筑之杖~但是插件版
+website: www.little100.top
+
+softdepend:
+  - WorldGuard
+  - WorldEdit
+  - GriefPrevention
+  - Towny
+  - Lands
+  - PlotSquared
+  - Residence
+
+commands:
+  constructionwand:
+    description: 建筑之杖主命令
+    aliases: [cw, wand]
+    usage: /<command> [give|itemgui|gui|enchant|preview|list|reload|help]
+
+permissions:
+  # ========== 玩家基础权限 ==========
+  constructionwand.use:
+    description: 允许使用建筑之杖（基础权限）
+    default: true
+  constructionwand.use.stone:
+    description: 允许使用石制建筑之杖
+    default: true
+  constructionwand.use.iron:
+    description: 允许使用铁制建筑之杖
+    default: true
+  constructionwand.use.diamond:
+    description: 允许使用钻石建筑之杖
+    default: true
+  constructionwand.use.netherite:
+    description: 允许使用下界合金建筑之杖
+    default: true
+  constructionwand.use.infinity:
+    description: 允许使用无限建筑之杖
+    default: true
+  constructionwand.preview:
+    description: 允许切换预览模式（/cw preview）
+    default: true
+  constructionwand.settings:
+    description: 允许打开设置GUI（/cw gui）- 调整预览颜色和模式
+    default: true
+  
+  # ========== 管理员权限 ==========
+  constructionwand.give:
+    description: 允许给予建筑之杖（/cw give）
+    default: op
+  constructionwand.itemgui:
+    description: 允许打开物品获取GUI（/cw itemgui）- 直接获取手杖
+    default: op
+  constructionwand.enchant:
+    description: 允许使用附魔命令（/cw enchant）
+    default: op
+  constructionwand.nbtdebug:
+    description: 允许使用NBT调试命令（/cw nbtdebug）
+    default: op
+  constructionwand.lang:
+    description: 允许切换服务器语言（/cw lang）- 影响全服
+    default: op
+  constructionwand.reload:
+    description: 允许重载配置（/cw reload）
+    default: op
+  constructionwand.bypass:
+    description: 绕过领地保护检查
+    default: op
+  
+  # ========== 权限组（方便管理） ==========
+  constructionwand.player:
+    description: 普通玩家权限组
+    default: true
+    children:
+      constructionwand.use: true
+      constructionwand.use.stone: true
+      constructionwand.use.iron: true
+      constructionwand.use.diamond: true
+      constructionwand.use.netherite: true
+      constructionwand.use.infinity: true
+      constructionwand.preview: true
+      constructionwand.settings: true
+  constructionwand.admin:
+    description: 管理员权限组
+    default: op
+    children:
+      constructionwand.player: true
+      constructionwand.give: true
+      constructionwand.itemgui: true
+      constructionwand.enchant: true
+      constructionwand.nbtdebug: true
+      constructionwand.lang: true
+      constructionwand.reload: true
+      constructionwand.bypass: true
