@@ -112,7 +112,8 @@ public class WandCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        ItemStack wand = wandItemManager.createWand(wandType);
+        // 使用 recipeManager 创建手杖（使用配置中的材质）
+        ItemStack wand = plugin.getRecipeManager().createWandFromConfig(wandType);
         target.getInventory().addItem(wand);
 
         String wandName = i18n.get("wand." + wandType.getId() + ".name");
@@ -152,6 +153,7 @@ public class WandCommand implements CommandExecutor, TabCompleter {
 
         WandGUI gui = new WandGUI(wandItemManager, i18n);
         gui.setWandConfigManager(plugin.getWandConfigManager());
+        gui.setRecipeManager(plugin.getRecipeManager());
 
         Bukkit.getPluginManager().registerEvents(gui, plugin);
         gui.openInventory(player);

@@ -12,6 +12,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.little100.constructionWand.i18n.I18nManager;
+import org.little100.constructionWand.recipe.WandRecipeManager;
 import org.little100.constructionWand.wand.WandConfigManager;
 import org.little100.constructionWand.wand.WandItemManager;
 import org.little100.constructionWand.wand.WandType;
@@ -22,6 +23,7 @@ public class WandGUI implements InventoryHolder, Listener {
     private final I18nManager i18n;
     private final Inventory inventory;
     private WandConfigManager wandConfigManager;
+    private WandRecipeManager recipeManager;
 
     private static final String GUI_TITLE_KEY = "gui.wand.title";
     private String guiTitle;
@@ -40,6 +42,10 @@ public class WandGUI implements InventoryHolder, Listener {
         this.wandConfigManager = wandConfigManager;
     }
 
+    public void setRecipeManager(WandRecipeManager recipeManager) {
+        this.recipeManager = recipeManager;
+    }
+
     private void initializeItems() {
 
         inventory.clear();
@@ -54,7 +60,13 @@ public class WandGUI implements InventoryHolder, Listener {
                 continue; // 跳过禁用的手杖
             }
 
-            ItemStack wand = wandItemManager.createWand(type);
+            // 使用 recipeManager 创建手杖（使用配置中的材质）
+            ItemStack wand;
+            if (recipeManager != null) {
+                wand = recipeManager.createWandFromConfig(type);
+            } else {
+                wand = wandItemManager.createWand(type);
+            }
             inventory.setItem(slot, wand);
             slot++;
         }
@@ -126,7 +138,13 @@ public class WandGUI implements InventoryHolder, Listener {
                     return;
                 }
 
-                ItemStack newWand = wandItemManager.createWand(type);
+                // 使用 recipeManager 创建手杖（使用配置中的材质）
+                ItemStack newWand;
+                if (recipeManager != null) {
+                    newWand = recipeManager.createWandFromConfig(type);
+                } else {
+                    newWand = wandItemManager.createWand(type);
+                }
                 player.getInventory().addItem(newWand);
 
                 String wandName = i18n.get("wand." + type.getId() + ".name");

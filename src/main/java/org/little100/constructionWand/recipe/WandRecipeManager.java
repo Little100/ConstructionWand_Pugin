@@ -341,4 +341,96 @@ public class WandRecipeManager {
     public FileConfiguration getCraftConfig() {
         return craftConfig;
     }
+
+    /**
+     * 根据 WandType 创建手杖物品（使用 craft.yml 中配置的材质）
+     * @param type 手杖类型
+     * @return 创建的手杖物品，如果配置中没有该类型则使用默认材质
+     */
+    public ItemStack createWandFromConfig(WandType type) {
+        ConfigurationSection recipesSection = craftConfig.getConfigurationSection("recipes");
+        if (recipesSection == null) {
+            return wandItemManager.createWand(type);
+        }
+
+        ConfigurationSection recipeSection = recipesSection.getConfigurationSection(type.getId());
+        if (recipeSection == null) {
+            return wandItemManager.createWand(type);
+        }
+
+        ConfigurationSection outputSection = recipeSection.getConfigurationSection("output");
+        if (outputSection == null) {
+            return wandItemManager.createWand(type);
+        }
+
+        // 获取配置中的材质
+        String materialName = outputSection.getString("material");
+        if (materialName == null) {
+            return wandItemManager.createWand(type);
+        }
+
+        Material material = Material.getMaterial(materialName.toUpperCase());
+        if (material == null) {
+            return wandItemManager.createWand(type);
+        }
+
+        // 获取自定义模型数据
+        int customModelData = outputSection.getInt("custom-model-data", type.getCustomModelData());
+
+        return wandItemManager.createWandWithMaterial(type, material, customModelData);
+    }
+
+    /**
+     * 获取 WandType 在配置中的材质
+     * @param type 手杖类型
+     * @return 配置中的材质，如果没有配置则返回默认材质
+     */
+    public Material getConfiguredMaterial(WandType type) {
+        ConfigurationSection recipesSection = craftConfig.getConfigurationSection("recipes");
+        if (recipesSection == null) {
+            return type.getBaseMaterial();
+        }
+
+        ConfigurationSection recipeSection = recipesSection.getConfigurationSection(type.getId());
+        if (recipeSection == null) {
+            return type.getBaseMaterial();
+        }
+
+        ConfigurationSection outputSection = recipeSection.getConfigurationSection("output");
+        if (outputSection == null) {
+            return type.getBaseMaterial();
+        }
+
+        String materialName = outputSection.getString("material");
+        if (materialName == null) {
+            return type.getBaseMaterial();
+        }
+
+        Material material = Material.getMaterial(materialName.toUpperCase());
+        return material != null ? material : type.getBaseMaterial();
+    }
+
+    /**
+     * 获取 WandType 在配置中的自定义模型数据
+     * @param type 手杖类型
+     * @return 配置中的自定义模型数据，如果没有配置则返回默认值
+     */
+    public int getConfiguredCustomModelData(WandType type) {
+        ConfigurationSection recipesSection = craftConfig.getConfigurationSection("recipes");
+        if (recipesSection == null) {
+            return type.getCustomModelData();
+        }
+
+        ConfigurationSection recipeSection = recipesSection.getConfigurationSection(type.getId());
+        if (recipeSection == null) {
+            return type.getCustomModelData();
+        }
+
+        ConfigurationSection outputSection = recipeSection.getConfigurationSection("output");
+        if (outputSection == null) {
+            return type.getCustomModelData();
+        }
+
+        return outputSection.getInt("custom-model-data", type.getCustomModelData());
+    }
 }
