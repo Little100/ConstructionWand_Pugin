@@ -39,6 +39,28 @@ protection:
   # use WorldGuard native API as an addition to event check?
   use-worldguard: true
 
+# 手杖显示设置
+# wand display settings
+display:
+  # 耐久度显示模式
+  # number - 数字模式，显示 "耐久度: 2031"
+  # legacy - 传统模式，显示 "使用次数: 当前/最大" + 进度条
+  # Durability display mode
+  # number - Number mode, shows "Durability: 2031"
+  # legacy - Legacy mode, shows "Uses: current/max" + progress bar
+  durability-display: "number"
+  
+  # 进度条长度(仅 legacy 模式有效)
+  # Progress bar length (only for legacy mode)
+  progress-bar-length: 10
+
+# 使用间隔设置
+# Usage cooldown settings
+cooldown:
+  # 默认 10 tick = 0.5 秒
+  # Default 10 tick = 0.5 second
+  ticks: 10
+
 # 手杖设置
 # wand settings
 wands:
@@ -79,6 +101,27 @@ sounds:
   place: true
   # 手杖损坏音效
   break: true
+
+# MagicBlock 插件适配设置
+# MagicBlock plugin integration settings
+magicblock:
+  # 是否启用 MagicBlock 适配
+  # Enable MagicBlock integration
+  enabled: true
+  
+  # 是否优先使用 MagicBlock 的方块
+  # 如果为 true，会优先消耗 MagicBlock 的使用次数
+  # 如果为 false，会优先消耗普通方块
+  # Whether to use MagicBlock blocks first
+  # If true, MagicBlock uses will be consumed first
+  # If false, normal blocks will be consumed first
+  use-first: true
+  
+  # 是否需要 magicblock.use 权限才能使用 MagicBlock 方块
+  # 默认为 true，即需要权限
+  # Whether magicblock.use permission is required to use MagicBlock blocks
+  # Default is true, meaning permission is required
+  require-permission: true
 
 # 调试模式
 debug: false

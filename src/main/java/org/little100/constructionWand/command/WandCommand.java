@@ -151,6 +151,7 @@ public class WandCommand implements CommandExecutor, TabCompleter {
         }
 
         WandGUI gui = new WandGUI(wandItemManager, i18n);
+        gui.setWandConfigManager(plugin.getWandConfigManager());
 
         Bukkit.getPluginManager().registerEvents(gui, plugin);
         gui.openInventory(player);
@@ -401,15 +402,20 @@ public class WandCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(i18n.get("command.list.title"));
 
         for (WandType type : WandType.values()) {
+            // 从配置获取值
+            int maxBlocks = wandItemManager.getConfigMaxBlocks(type);
+            int durability = wandItemManager.getConfigDurability(type);
+            boolean isUnbreakable = durability == -1;
+            
             StringBuilder sb = new StringBuilder();
             sb.append(ChatColor.YELLOW).append(type.getId());
             sb.append(ChatColor.WHITE).append(" - ");
             sb.append(i18n.get("wand." + type.getId() + ".name"));
-            sb.append(ChatColor.GRAY).append(" (").append(i18n.get("command.list.max", type.getMaxBlocks()));
-            if (type.isUnbreakable()) {
+            sb.append(ChatColor.GRAY).append(" (").append(i18n.get("command.list.max", maxBlocks));
+            if (isUnbreakable) {
                 sb.append(", ").append(i18n.get("command.list.infinite"));
             } else {
-                sb.append(", ").append(i18n.get("command.list.durability", type.getMaxDurability()));
+                sb.append(", ").append(i18n.get("command.list.durability", durability));
             }
             sb.append(ChatColor.GRAY).append(")");
 

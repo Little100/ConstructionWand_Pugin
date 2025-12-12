@@ -14,8 +14,16 @@ wand:
   # 物品描述
   lore:
     max-blocks: "&e最大放置: &f{0} 方块"
+    # number 模式
     durability: "&e耐久度: &f{0}"
     durability-infinite: "&e耐久度: &d无限"
+    # legacy 模式（类似 MagicBlock）
+    durability-legacy: "&7使用次数: &a{0}&7/&a{1}"
+    durability-legacy-infinite: "&7使用次数: &d无限"
+    progress-bar-prefix: "&7["
+    progress-bar-suffix: "&7]"
+    progress-bar-full: "&a■"
+    progress-bar-empty: "&8■"
     usage-1: "&b右键点击方块表面延伸放置"
 
 # 消息
@@ -24,6 +32,7 @@ message:
   no-place: "&e没有可以放置的位置，请确保你有足够的方块！"
   no-permission: "&c你没有权限执行此操作！"
   no-permission-wand-type: "&c你没有使用 {0} 的权限！"
+  wand-disabled: "&c此手杖已被禁用！"
   wand-given: "&a已给予 {0} 一个 {1}"
   wand-received: "&a你获得了一个 {0}"
   config-reloaded: "&a配置已重新加载！"

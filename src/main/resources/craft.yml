@@ -1,0 +1,143 @@
+# 建筑之杖合成配方配置文件
+# Construction Wand Crafting Recipes Configuration
+#
+# 重要说明 / Important Notes:
+# - 对于预定义的手杖类型 (stone, iron, diamond, netherite, infinity)，
+#   name 和 lore 字段会被忽略，将使用语言文件 (lang/*.yml) 中的定义
+# - 只有自定义手杖才需要在这里设置 name 和 lore
+# - For predefined wand types, name and lore fields are ignored,
+#   the plugin will use definitions from language files (lang/*.yml)
+# - Only custom wands need name and lore settings here
+#
+# 材料定义支持两种格式 / Ingredients support two formats:
+# 1. 简写格式 / Short format: S: STICK
+# 2. 完整格式 / Full format: S: { material: STICK }
+
+# 合成配方设置
+# Crafting recipe settings
+recipes:
+  # 石制建筑之杖
+  # 注意: name 和 lore 对预定义类型无效，使用语言文件中的定义
+  stone:
+    # 是否启用此合成配方
+    enabled: true
+    # 输出物品设置
+    output:
+      # 物品材质（使用 Bukkit Material 名称）
+      material: STONE_PICKAXE
+      # 自定义模型数据（用于资源包）
+      custom-model-data: 101
+      # PDC 数据（持久化数据容器）
+      # wand_type 匹配预定义类型时，会使用 WandItemManager 创建物品
+      pdc:
+        wand_type: "stone"
+    # 合成配方形状（3x3）
+    # 使用字符代表材料，空格代表空位
+    shape:
+      - "  M"
+      - " S "
+      - "S  "
+    # 材料定义（使用简写格式）
+    ingredients:
+      S: STICK
+      M: COBBLESTONE
+
+  # 铁制建筑之杖
+  iron:
+    enabled: true
+    output:
+      material: IRON_PICKAXE
+      custom-model-data: 101
+      pdc:
+        wand_type: "iron"
+    shape:
+      - "  M"
+      - " S "
+      - "S  "
+    ingredients:
+      S: STICK
+      M: IRON_INGOT
+
+  # 钻石建筑之杖
+  diamond:
+    enabled: true
+    output:
+      material: DIAMOND_PICKAXE
+      custom-model-data: 101
+      pdc:
+        wand_type: "diamond"
+    shape:
+      - "  M"
+      - " S "
+      - "S  "
+    ingredients:
+      S: STICK
+      M: DIAMOND
+
+  # 下界合金建筑之杖
+  netherite:
+    enabled: true
+    output:
+      material: NETHERITE_PICKAXE
+      custom-model-data: 101
+      pdc:
+        wand_type: "netherite"
+    shape:
+      - "  M"
+      - " S "
+      - "S  "
+    ingredients:
+      S: STICK
+      M: NETHERITE_INGOT
+
+  # 无限建筑之杖
+  infinity:
+    enabled: true
+    output:
+      material: NETHERITE_PICKAXE
+      custom-model-data: 102
+      pdc:
+        wand_type: "infinity"
+    shape:
+      - "  M"
+      - " S "
+      - "S  "
+    ingredients:
+      S: STICK
+      M: NETHER_STAR
+
+# ============================================================
+# 自定义合成配方示例
+# Custom recipe example
+# ============================================================
+# 你可以添加自己的合成配方，支持非耐久性物品如烈焰棒
+# You can add your own recipes, supporting non-durability items like blaze rods
+#
+# 注意: 自定义手杖需要设置 name 和 lore，因为它们不在语言文件中定义
+# Note: Custom wands need name and lore settings as they are not defined in language files
+#
+# 示例 / Example:
+# custom_wand:
+#   enabled: true
+#   output:
+#     material: BLAZE_ROD
+#     custom-model-data: 200
+#     # 自定义手杖必须设置 name 和 lore
+#     name: "&6&l自定义建筑之杖"
+#     lore:
+#       - "&7一根神奇的烈焰棒"
+#       - "&e最大方块数: 50"
+#     pdc:
+#       # 使用不匹配预定义类型的 wand_type，或者完全自定义
+#       wand_type: "custom"
+#       # 自定义属性（需要在代码中支持）
+#       max_blocks: 50
+#       max_durability: 500
+#   shape:
+#     - " B "
+#     - " B "
+#     - " G "
+#   # 材料定义支持简写格式
+#   ingredients:
+#     B: BLAZE_ROD
+#     G: GOLD_INGOT

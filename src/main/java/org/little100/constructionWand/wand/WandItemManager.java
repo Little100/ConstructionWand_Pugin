@@ -22,15 +22,85 @@ public class WandItemManager {
     private final Plugin plugin;
     private final I18nManager i18n;
     private final NamespacedKey wandTypeKey;
+    private WandConfigManager configManager;
+
+    // 显示模式常量
+    public static final String DISPLAY_MODE_NUMBER = "number";
+    public static final String DISPLAY_MODE_LEGACY = "legacy";
 
     public WandItemManager(Plugin plugin, I18nManager i18n) {
         this.plugin = plugin;
         this.i18n = i18n;
         this.wandTypeKey = new NamespacedKey(plugin, "wand_type");
+        this.configManager = null;
+    }
+
+    public WandItemManager(Plugin plugin, I18nManager i18n, WandConfigManager configManager) {
+        this.plugin = plugin;
+        this.i18n = i18n;
+        this.wandTypeKey = new NamespacedKey(plugin, "wand_type");
+        this.configManager = configManager;
+    }
+
+    public void setConfigManager(WandConfigManager configManager) {
+        this.configManager = configManager;
+    }
+
+    /**
+     * 获取耐久度显示模式
+     */
+    private String getDurabilityDisplayMode() {
+        return plugin.getConfig().getString("display.durability-display", DISPLAY_MODE_NUMBER);
+    }
+
+    /**
+     * 获取进度条长度
+     */
+    private int getProgressBarLength() {
+        return plugin.getConfig().getInt("display.progress-bar-length", 10);
+    }
+
+    /**
+     * 生成进度条
+     */
+    private String generateProgressBar(int current, int max) {
+        int length = getProgressBarLength();
+        if (max <= 0) return "";
+        
+        float percent = (float) current / max;
+        int filledBars = (int) (length * percent);
+        
+        String prefix = i18n.get("wand.lore.progress-bar-prefix");
+        String suffix = i18n.get("wand.lore.progress-bar-suffix");
+        String fullChar = i18n.get("wand.lore.progress-bar-full");
+        String emptyChar = i18n.get("wand.lore.progress-bar-empty");
+        
+        StringBuilder bar = new StringBuilder();
+        bar.append(prefix);
+        for (int i = 0; i < length; i++) {
+            if (i < filledBars) {
+                bar.append(fullChar);
+            } else {
+                bar.append(emptyChar);
+            }
+        }
+        bar.append(suffix);
+        return bar.toString();
     }
 
     public ItemStack createWand(WandType type) {
-        ItemStack item = new ItemStack(type.getBaseMaterial());
+        return createWandWithMaterial(type, type.getBaseMaterial(), type.getCustomModelData());
+    }
+
+    /**
+     * 使用自定义材质创建手杖
+     * @param type 手杖类型
+     * @param material 自定义材质
+     * @param customModelData 自定义模型数据
+     * @return 创建的手杖物品
+     */
+    public ItemStack createWandWithMaterial(WandType type, Material material, int customModelData) {
+        ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
         if (meta == null)
@@ -39,25 +109,47 @@ public class WandItemManager {
         String nameKey = "wand." + type.getId() + ".name";
         meta.setDisplayName(i18n.get(nameKey));
 
+        // 从配置获取值
+        int maxBlocks = getConfigMaxBlocks(type);
+        int maxDurability = getConfigDurability(type);
+        boolean isUnbreakable = maxDurability == -1;
+
+        // 获取显示模式
+        String displayMode = getDurabilityDisplayMode();
+
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + "━━━━━━━━━━━━━━━━━━━━");
-        lore.add(i18n.get("wand.lore.max-blocks", type.getMaxBlocks()));
-        if (type.isUnbreakable()) {
-            lore.add(i18n.get("wand.lore.durability-infinite"));
+        lore.add(i18n.get("wand.lore.max-blocks", maxBlocks));
+        
+        // 根据显示模式添加耐久度信息
+        if (isUnbreakable) {
+            if (DISPLAY_MODE_LEGACY.equalsIgnoreCase(displayMode)) {
+                lore.add(i18n.get("wand.lore.durability-legacy-infinite"));
+            } else {
+                lore.add(i18n.get("wand.lore.durability-infinite"));
+            }
         } else {
-            lore.add(i18n.get("wand.lore.durability", type.getMaxDurability()));
+            if (DISPLAY_MODE_LEGACY.equalsIgnoreCase(displayMode)) {
+                // Legacy 模式：显示 当前/最大 + 进度条
+                lore.add(i18n.get("wand.lore.durability-legacy", maxDurability, maxDurability));
+                lore.add(generateProgressBar(maxDurability, maxDurability));
+            } else {
+                // Number 模式：只显示数字
+                lore.add(i18n.get("wand.lore.durability", maxDurability));
+            }
         }
+        
         lore.add(ChatColor.GRAY + "━━━━━━━━━━━━━━━━━━━━");
         lore.add(i18n.get("wand.lore.usage-1"));
         lore.add(ChatColor.GRAY + "━━━━━━━━━━━━━━━━━━━━");
         meta.setLore(lore);
 
-        VersionHelper.setCustomModelData(meta, type.getCustomModelData());
+        VersionHelper.setCustomModelData(meta, customModelData);
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(wandTypeKey, PersistentDataType.STRING, type.getId());
 
-        if (type.isUnbreakable()) {
+        if (isUnbreakable) {
             meta.setUnbreakable(true);
             meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 
@@ -69,9 +161,39 @@ public class WandItemManager {
 
         item.setItemMeta(meta);
 
-        VersionHelper.setCustomModelDataComponent(item, type.getCustomModelData());
+        VersionHelper.setCustomModelDataComponent(item, customModelData);
 
         return item;
+    }
+
+    /**
+     * 从配置获取最大方块数
+     */
+    public int getConfigMaxBlocks(WandType type) {
+        if (configManager != null) {
+            return configManager.getMaxBlocks(type);
+        }
+        return type.getMaxBlocks();
+    }
+
+    /**
+     * 从配置获取耐久度
+     */
+    public int getConfigDurability(WandType type) {
+        if (configManager != null) {
+            return configManager.getDurability(type);
+        }
+        return type.getMaxDurability();
+    }
+
+    /**
+     * 检查手杖是否启用
+     */
+    public boolean isWandEnabled(WandType type) {
+        if (configManager != null) {
+            return configManager.isEnabled(type);
+        }
+        return true;
     }
 
     public boolean isWand(ItemStack item) {
@@ -122,8 +244,11 @@ public class WandItemManager {
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
             WandType type = getWandType(item);
-            if (type != null && !type.isUnbreakable()) {
-                return type.getMaxDurability() - damageable.getDamage();
+            if (type != null) {
+                int maxDurability = getConfigDurability(type);
+                if (maxDurability != -1) {
+                    return maxDurability - damageable.getDamage();
+                }
             }
         }
         return -1;
@@ -131,29 +256,39 @@ public class WandItemManager {
 
     public boolean consumeDurability(ItemStack item, int amount) {
         WandType type = getWandType(item);
-        if (type == null || type.isUnbreakable())
+        if (type == null)
             return false;
+        
+        int maxDurability = getConfigDurability(type);
+        if (maxDurability == -1)
+            return false; // 无限耐久
 
         ItemMeta meta = item.getItemMeta();
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
             int newDamage = damageable.getDamage() + amount;
 
-            if (newDamage >= type.getMaxDurability()) {
-
+            if (newDamage >= maxDurability) {
                 return true;
             }
 
             damageable.setDamage(newDamage);
             item.setItemMeta(meta);
+            
+            // 更新 lore 显示(包括进度条)
+            updateWandDisplay(item);
         }
         return false;
     }
 
     public void repairWand(ItemStack item, int amount) {
         WandType type = getWandType(item);
-        if (type == null || type.isUnbreakable())
+        if (type == null)
             return;
+        
+        int maxDurability = getConfigDurability(type);
+        if (maxDurability == -1)
+            return; // 无限耐久
 
         ItemMeta meta = item.getItemMeta();
         if (meta instanceof Damageable) {
@@ -161,6 +296,9 @@ public class WandItemManager {
             int newDamage = Math.max(0, damageable.getDamage() - amount);
             damageable.setDamage(newDamage);
             item.setItemMeta(meta);
+            
+            // 更新 lore 显示(包括进度条)
+            updateWandDisplay(item);
         }
     }
 
@@ -180,10 +318,24 @@ public class WandItemManager {
         String nameKey = "wand." + type.getId() + ".name";
         meta.setDisplayName(i18n.get(nameKey));
 
+        // 从配置获取值
+        int baseMaxBlocks = getConfigMaxBlocks(type);
+        int maxDurability = getConfigDurability(type);
+        boolean isUnbreakable = maxDurability == -1;
+
+        // 获取当前耐久度
+        int currentDurability = getCurrentDurability(item);
+        if (currentDurability == -1) {
+            currentDurability = maxDurability; // 无限耐久或新物品
+        }
+
+        // 获取显示模式
+        String displayMode = getDurabilityDisplayMode();
+
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + "━━━━━━━━━━━━━━━━━━━━");
 
-        int maxBlocks = type.getMaxBlocks();
+        int maxBlocks = baseMaxBlocks;
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         NamespacedKey enchantKey = new NamespacedKey(plugin, "enchant_building_extension");
         if (pdc.has(enchantKey, PersistentDataType.INTEGER)) {
@@ -195,11 +347,25 @@ public class WandItemManager {
         }
 
         lore.add(i18n.get("wand.lore.max-blocks", maxBlocks));
-        if (type.isUnbreakable()) {
-            lore.add(i18n.get("wand.lore.durability-infinite"));
+        
+        // 根据显示模式添加耐久度信息
+        if (isUnbreakable) {
+            if (DISPLAY_MODE_LEGACY.equalsIgnoreCase(displayMode)) {
+                lore.add(i18n.get("wand.lore.durability-legacy-infinite"));
+            } else {
+                lore.add(i18n.get("wand.lore.durability-infinite"));
+            }
         } else {
-            lore.add(i18n.get("wand.lore.durability", type.getMaxDurability()));
+            if (DISPLAY_MODE_LEGACY.equalsIgnoreCase(displayMode)) {
+                // Legacy 模式：显示 当前/最大 + 进度条
+                lore.add(i18n.get("wand.lore.durability-legacy", currentDurability, maxDurability));
+                lore.add(generateProgressBar(currentDurability, maxDurability));
+            } else {
+                // Number 模式：只显示最大耐久度
+                lore.add(i18n.get("wand.lore.durability", maxDurability));
+            }
         }
+        
         lore.add(ChatColor.GRAY + "━━━━━━━━━━━━━━━━━━━━");
         lore.add(i18n.get("wand.lore.usage-1"));
         lore.add(ChatColor.GRAY + "━━━━━━━━━━━━━━━━━━━━");

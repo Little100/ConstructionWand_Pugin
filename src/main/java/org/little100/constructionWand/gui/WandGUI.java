@@ -12,6 +12,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.little100.constructionWand.i18n.I18nManager;
+import org.little100.constructionWand.wand.WandConfigManager;
 import org.little100.constructionWand.wand.WandItemManager;
 import org.little100.constructionWand.wand.WandType;
 
@@ -20,6 +21,7 @@ public class WandGUI implements InventoryHolder, Listener {
     private final WandItemManager wandItemManager;
     private final I18nManager i18n;
     private final Inventory inventory;
+    private WandConfigManager wandConfigManager;
 
     private static final String GUI_TITLE_KEY = "gui.wand.title";
     private String guiTitle;
@@ -34,6 +36,10 @@ public class WandGUI implements InventoryHolder, Listener {
         initializeItems();
     }
 
+    public void setWandConfigManager(WandConfigManager wandConfigManager) {
+        this.wandConfigManager = wandConfigManager;
+    }
+
     private void initializeItems() {
 
         inventory.clear();
@@ -42,6 +48,11 @@ public class WandGUI implements InventoryHolder, Listener {
         for (WandType type : WandType.values()) {
             if (slot >= 9)
                 break;
+
+            // 检查手杖是否启用
+            if (wandConfigManager != null && !wandConfigManager.isEnabled(type)) {
+                continue; // 跳过禁用的手杖
+            }
 
             ItemStack wand = wandItemManager.createWand(type);
             inventory.setItem(slot, wand);
@@ -103,6 +114,11 @@ public class WandGUI implements InventoryHolder, Listener {
         if (wandItemManager.isWand(clickedItem)) {
             WandType type = wandItemManager.getWandType(clickedItem);
             if (type != null) {
+                // 检查手杖是否启用
+                if (wandConfigManager != null && !wandConfigManager.isEnabled(type)) {
+                    player.sendMessage(i18n.get("message.wand-disabled"));
+                    return;
+                }
 
                 if (!player.hasPermission("constructionwand.give") &&
                         !player.hasPermission(type.getPermission())) {

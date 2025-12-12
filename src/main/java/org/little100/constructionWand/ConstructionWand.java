@@ -1,11 +1,14 @@
 package org.little100.constructionWand;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.little100.constructionWand.action.WandAction;
 import org.little100.constructionWand.command.WandCommand;
 import org.little100.constructionWand.enchant.EnchantmentManager;
+import org.little100.constructionWand.hook.MagicBlockHook;
 import org.little100.constructionWand.i18n.I18nManager;
 import org.little100.constructionWand.listener.ItemProtectionListener;
 import org.little100.constructionWand.listener.WandListener;
@@ -13,6 +16,7 @@ import org.little100.constructionWand.preview.PreviewManager;
 import org.little100.constructionWand.protection.ProtectionChecker;
 import org.little100.constructionWand.recipe.WandRecipeManager;
 import org.little100.constructionWand.utils.VersionHelper;
+import org.little100.constructionWand.wand.WandConfigManager;
 import org.little100.constructionWand.wand.WandItemManager;
 
 public final class ConstructionWand extends JavaPlugin {
@@ -20,6 +24,7 @@ public final class ConstructionWand extends JavaPlugin {
     private static ConstructionWand instance;
 
     private I18nManager i18nManager;
+    private WandConfigManager wandConfigManager;
     private WandItemManager wandItemManager;
     private WandRecipeManager recipeManager;
     private ProtectionChecker protectionChecker;
@@ -68,7 +73,10 @@ public final class ConstructionWand extends JavaPlugin {
     }
 
     private void initManagers() {
-        wandItemManager = new WandItemManager(this, i18nManager);
+        // 首先初始化配置管理器
+        wandConfigManager = new WandConfigManager(this);
+        
+        wandItemManager = new WandItemManager(this, i18nManager, wandConfigManager);
         recipeManager = new WandRecipeManager(this, wandItemManager);
         protectionChecker = new ProtectionChecker(this);
         previewManager = new PreviewManager(this);
@@ -76,8 +84,35 @@ public final class ConstructionWand extends JavaPlugin {
         enchantmentManager = new EnchantmentManager(this, i18nManager);
 
         wandAction.setEnchantmentManager(enchantmentManager);
+        wandAction.setWandConfigManager(wandConfigManager);
 
         enchantmentManager.setWandItemManager(wandItemManager);
+
+        // 初始化 MagicBlock 适配器
+        initMagicBlockHook();
+    }
+
+    private void initMagicBlockHook() {
+        FileConfiguration config = getConfig();
+        
+        // 检查是否启用 MagicBlock 适配
+        boolean enableMagicBlock = config.getBoolean("magicblock.enabled", true);
+        if (!enableMagicBlock) {
+            getLogger().info("MagicBlock 适配已在配置中禁用");
+            return;
+        }
+
+        // 初始化 MagicBlock 适配器
+        if (MagicBlockHook.init(this)) {
+            // 配置 MagicBlock 选项
+            boolean useMagicBlockFirst = config.getBoolean("magicblock.use-first", true);
+            boolean requirePermission = config.getBoolean("magicblock.require-permission", true);
+            
+            wandAction.setUseMagicBlockFirst(useMagicBlockFirst);
+            wandAction.setRequireMagicBlockPermission(requirePermission);
+            
+            getLogger().info("MagicBlock 适配已启用 - 优先使用: " + useMagicBlockFirst + ", 需要权限: " + requirePermission);
+        }
     }
 
     private void registerListeners() {
@@ -121,7 +156,32 @@ public final class ConstructionWand extends JavaPlugin {
             protectionChecker.setUseWorldGuard(useWorldGuard);
         }
 
+        // 重载手杖配置
+        if (wandConfigManager != null) {
+            wandConfigManager.reloadConfig();
+        }
+
+        // 更新所有在线玩家背包中的手杖显示
+        updateAllOnlinePlayersWands();
+
         getLogger().info("配置已加载");
+    }
+
+    /**
+     * 更新所有在线玩家背包中的手杖显示
+     */
+    public void updateAllOnlinePlayersWands() {
+        if (wandItemManager == null) return;
+        
+        int totalUpdated = 0;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            int updated = wandItemManager.updateAllWandsInInventory(player);
+            totalUpdated += updated;
+        }
+        
+        if (totalUpdated > 0) {
+            getLogger().info("已更新 " + totalUpdated + " 个手杖的显示");
+        }
     }
 
     private Color parseColor(String colorStr) {
@@ -188,5 +248,9 @@ public final class ConstructionWand extends JavaPlugin {
 
     public EnchantmentManager getEnchantmentManager() {
         return enchantmentManager;
+    }
+
+    public WandConfigManager getWandConfigManager() {
+        return wandConfigManager;
     }
 }

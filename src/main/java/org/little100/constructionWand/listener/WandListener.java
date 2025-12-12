@@ -40,8 +40,8 @@ public class WandListener implements Listener {
     private final I18nManager i18n;
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private static final long COOLDOWN_TICKS = 10;
-    private static final long COOLDOWN_MS = COOLDOWN_TICKS * 50;
+    private long cooldownTicks = 10; // 默认 10 tick = 0.5 秒
+    private long cooldownMs = cooldownTicks * 50;
 
     private int previewTaskId = -1;
 
@@ -55,7 +55,18 @@ public class WandListener implements Listener {
 
     public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
+        loadCooldownConfig();
         startPreviewUpdateTask();
+    }
+
+    /**
+     * 从配置加载使用间隔
+     */
+    public void loadCooldownConfig() {
+        if (plugin != null) {
+            cooldownTicks = plugin.getConfig().getLong("cooldown.ticks", 10);
+            cooldownMs = cooldownTicks * 50;
+        }
     }
 
     private void startPreviewUpdateTask() {
@@ -117,23 +128,36 @@ public class WandListener implements Listener {
                 return;
             }
 
+            // 首先尝试不穿透流体的射线追踪
             RayTraceResult rayTrace = null;
+            Block targetBlock = null;
+            BlockFace targetFace = null;
+            
             try {
-                rayTrace = player.rayTraceBlocks(5.0, FluidCollisionMode.NEVER);
+                // 先尝试穿透流体，找到实体方块
+                rayTrace = player.rayTraceBlocks(5.0, FluidCollisionMode.ALWAYS);
+                
+                if (rayTrace != null && rayTrace.getHitBlock() != null) {
+                    Block hitBlock = rayTrace.getHitBlock();
+                    Material hitMaterial = hitBlock.getType();
+                    
+                    // 如果击中的是流体，继续穿透找实体方块
+                    if (isFluid(hitMaterial)) {
+                        // 使用 SOURCE_ONLY 模式，只检测流体源方块
+                        RayTraceResult solidTrace = player.rayTraceBlocks(5.0, FluidCollisionMode.NEVER);
+                        if (solidTrace != null && solidTrace.getHitBlock() != null) {
+                            targetBlock = solidTrace.getHitBlock();
+                            targetFace = solidTrace.getHitBlockFace();
+                        }
+                    } else {
+                        targetBlock = hitBlock;
+                        targetFace = rayTrace.getHitBlockFace();
+                    }
+                }
             } catch (Exception e) {
-
                 previewManager.clearPreview(player);
                 return;
             }
-
-            if (rayTrace == null || rayTrace.getHitBlock() == null) {
-
-                previewManager.clearPreview(player);
-                return;
-            }
-
-            Block targetBlock = rayTrace.getHitBlock();
-            BlockFace targetFace = rayTrace.getHitBlockFace();
 
             if (targetBlock == null || targetFace == null) {
                 previewManager.clearPreview(player);
@@ -144,12 +168,11 @@ public class WandListener implements Listener {
             try {
                 targetMaterial = targetBlock.getType();
             } catch (Exception e) {
-
                 previewManager.clearPreview(player);
                 return;
             }
 
-            if (targetMaterial == null || targetMaterial.isAir()) {
+            if (targetMaterial == null || targetMaterial.isAir() || isFluid(targetMaterial)) {
                 previewManager.clearPreview(player);
                 return;
             }
@@ -221,7 +244,7 @@ public class WandListener implements Listener {
         UUID playerId = player.getUniqueId();
         long currentTime = System.currentTimeMillis();
         Long lastUse = cooldowns.get(playerId);
-        if (lastUse != null && (currentTime - lastUse) < COOLDOWN_MS) {
+        if (lastUse != null && (currentTime - lastUse) < cooldownMs) {
 
             return;
         }
@@ -279,5 +302,16 @@ public class WandListener implements Listener {
             Bukkit.getScheduler().cancelTask(previewTaskId);
             previewTaskId = -1;
         }
+    }
+
+    /**
+     * 检查材质是否是流体
+     */
+    private boolean isFluid(Material material) {
+        if (material == null) return false;
+        return material == Material.WATER ||
+               material == Material.LAVA ||
+               material.name().contains("WATER") ||
+               material.name().contains("LAVA");
     }
 }
